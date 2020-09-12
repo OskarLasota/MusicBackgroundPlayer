@@ -1,21 +1,29 @@
 package com.frezzcoding.musicplayer
 
 import android.Manifest
+import android.app.AlertDialog
+import android.app.Dialog
+import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.util.DisplayMetrics
+import android.view.View
+import android.widget.Button
+import android.widget.EditText
 import android.widget.GridLayout
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MusicViewAdapter.OnItemClickListener {
 
 
     private lateinit var mediaPlayer : MediaPlayer
@@ -28,13 +36,18 @@ class MainActivity : AppCompatActivity() {
 
 
         /*
-        TODO We want a recycler view with all listOfSongs
         TODO 3 buttons , pause start stop
         TODO play in background
+        TODO allow name change of each song OR remove from the list - store in a roomdatabase
          */
 
-        obtainSongs()
 
+        obtainSongs()
+        setListeners()
+
+    }
+
+    private fun setListeners(){
 
     }
 
@@ -59,10 +72,36 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun setAdapter(listOfSongs : ArrayList<File>){
-        musicViewAdapter = MusicViewAdapter(listOfSongs)
+        musicViewAdapter = MusicViewAdapter(listOfSongs, this)
         var songlistview = findViewById<RecyclerView>(R.id.layout_songlist)
         songlistview.layoutManager = GridLayoutManager(this, 1)
         songlistview.adapter = musicViewAdapter
+    }
+
+    override fun onItemClick(file: File) {
+        showPopup()
+    }
+
+
+    private fun showPopup(){
+
+        var dialog = Dialog(this)
+        dialog.setContentView(R.layout.popup_editname)
+
+        var inputfield = dialog.findViewById<EditText>(R.id.et_newtitle)
+        var removebutton = dialog.findViewById<Button>(R.id.btn_remove)
+        var submitbutton = dialog.findViewById<Button>(R.id.btn_confirm)
+        submitbutton.setOnClickListener {
+
+        }
+        removebutton.setOnClickListener {
+
+        }
+
+
+        dialog.show()
+
+
     }
 
 

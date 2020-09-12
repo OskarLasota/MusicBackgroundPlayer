@@ -2,6 +2,7 @@ package com.frezzcoding.musicplayer
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.AdapterView
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.frezzcoding.musicplayer.databinding.ActivityMainBinding
@@ -9,7 +10,7 @@ import com.frezzcoding.musicplayer.databinding.MusiclistCardBinding
 import java.io.File
 
 
-class MusicViewAdapter(private val data : List<File>) : RecyclerView.Adapter<MusicViewAdapter.ViewHolder>() {
+class MusicViewAdapter(private val data : List<File>, val listener : OnItemClickListener) : RecyclerView.Adapter<MusicViewAdapter.ViewHolder>() {
 
     private lateinit var binding : MusiclistCardBinding
 
@@ -25,15 +26,25 @@ class MusicViewAdapter(private val data : List<File>) : RecyclerView.Adapter<Mus
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(data[position])
+        holder.bind(data[position], listener)
     }
 
-    class ViewHolder(var binding : MusiclistCardBinding) : RecyclerView.ViewHolder(binding.root){
+    class ViewHolder(private var binding : MusiclistCardBinding) : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(file : File){
+
+        fun bind(file : File, listener : OnItemClickListener){
             binding.file = file
-        }
 
+            binding.ivEdit.setOnClickListener {
+                listener.onItemClick(file)
+            }
+        }
+    }
+
+
+
+    interface OnItemClickListener{
+        fun onItemClick(file: File)
     }
 
 

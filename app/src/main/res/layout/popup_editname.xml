@@ -1,0 +1,71 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+
+   <TextView
+       android:id="@+id/tv_title"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:textSize="20sp"
+       android:gravity="center"
+       android:text="Edit Title"
+       android:textStyle="bold"
+       />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_newtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_below="@id/tv_title"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_newtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:hint="New title"
+            android:singleLine="true"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/til_newtitle"
+        >
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_remove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/btn_confirm"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:text="Remove"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@id/btn_remove"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:text="Confirm"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</RelativeLayout>
