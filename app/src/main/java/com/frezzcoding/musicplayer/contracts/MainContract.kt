@@ -17,6 +17,7 @@ interface MainContract {
     interface Model {
         fun getStoredSongs() : List<Song>
         fun insertSong(message : Song)
+        fun removeSong(song : Song)
     }
 
 }

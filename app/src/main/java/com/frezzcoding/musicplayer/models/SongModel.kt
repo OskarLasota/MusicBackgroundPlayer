@@ -12,5 +12,9 @@ class SongModel @Inject constructor() : MainContract.Model {
 
     }
 
+    override fun removeSong(song: Song) {
+
+    }
+
 
 }
