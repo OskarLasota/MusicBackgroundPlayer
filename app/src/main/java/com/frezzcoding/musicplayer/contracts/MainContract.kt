@@ -6,11 +6,11 @@ interface MainContract {
 
     interface View {
         fun initView(list : List<Song>)
-        fun updateScreenNewMessage(list : List<Song>)
+        fun updateScreenNewSong(list : List<Song>)
     }
 
     interface Presenter {
-        fun getAllSongs()
+        fun getAllSongs() : List<Song>
         fun insertSong(song : Song)
     }
 

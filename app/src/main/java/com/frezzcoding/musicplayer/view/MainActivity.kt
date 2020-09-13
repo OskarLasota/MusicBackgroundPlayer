@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity(),
         songlistview.adapter = musicViewAdapter
     }
 
-    override fun updateScreenNewMessage(list: List<Song>) {
+    override fun updateScreenNewSong(list: List<Song>) {
 
     }
 

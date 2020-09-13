@@ -8,10 +8,12 @@ import javax.inject.Inject
 class SongPresenter @Inject constructor(private val view : MainContract.View, private val model : MainContract.Model) : MainContract.Presenter{
 
     init{
-        getAllSongs()
+        var songs = getAllSongs()
+        compareToCache(songs)
+
     }
 
-    override fun getAllSongs() {
+    override fun getAllSongs() : List<Song>{
 
         var listOfSongs : ArrayList<Song> = arrayListOf()
         var listOfFiles = File("/sdcard/Download")
@@ -23,8 +25,14 @@ class SongPresenter @Inject constructor(private val view : MainContract.View, pr
             }
         }
 
-        view.initView(listOfSongs)
+        return listOfSongs
     }
+
+    private fun compareToCache(songs : List<Song>){
+        //compare each song with the existing song in the cache then update view
+        view.initView(songs)
+    }
+
 
     override fun insertSong(song: Song) {
         TODO("Not yet implemented")
