@@ -15,8 +15,8 @@ class SongPresenter @Inject constructor(private val view : MainContract.View, pr
 
         var listOfSongs : ArrayList<Song> = arrayListOf()
         var listOfFiles = File("/sdcard/Download")
-        listOfFiles?.let {
-            for (file in listOfFiles.listFiles()) {
+        listOfFiles.listFiles()?.let { filelist ->
+            for (file in filelist) {
                 if (file.name.contains("mp3") || file.name.contains("mp4")) {
                     listOfSongs.add(Song(0, file.name, file))
                 }
