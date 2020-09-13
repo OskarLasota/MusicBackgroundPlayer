@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.GridLayoutManager
@@ -16,7 +17,9 @@ import com.frezzcoding.musicplayer.R
 import com.frezzcoding.musicplayer.contracts.MainContract
 import com.frezzcoding.musicplayer.models.Song
 import com.frezzcoding.musicplayer.view.adapters.MusicViewAdapter
+import dagger.android.AndroidInjection
 import java.io.File
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(),
     MusicViewAdapter.OnItemClickListener, MainContract.View {
@@ -24,41 +27,37 @@ class MainActivity : AppCompatActivity(),
 
     private lateinit var mediaPlayer : MediaPlayer
     private lateinit var musicViewAdapter: MusicViewAdapter
-    private lateinit var listOfSongs : ArrayList<File>
+    @Inject lateinit var presenter : MainContract.Presenter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        AndroidInjection.inject(this)
 
         /*
         TODO 3 buttons , pause start stop
         TODO play in background
         TODO allow name change of each song OR remove from the list - store in a roomdatabase
+        TODO maybe make a list of songs users can download songs from
          */
+        //permissions
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), PackageManager.PERMISSION_GRANTED)
 
-
-        obtainSongs()
         setListeners()
 
     }
 
     private fun setListeners(){
+        findViewById<Button>(R.id.btn_play).setOnClickListener {
 
-    }
-
-    private fun obtainSongs(){
-        //permissions
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), PackageManager.PERMISSION_GRANTED)
-
-        listOfSongs = arrayListOf()
-        var listOfFiles = File("/sdcard/Download")
-        for(file in listOfFiles.listFiles()){
-            if(file.name.contains("mp3") || file.name.contains("mp4")) {
-                listOfSongs.add(file)
-            }
         }
-        setAdapter(listOfSongs)
+        findViewById<Button>(R.id.btn_restart).setOnClickListener {
+
+        }
+        findViewById<Button>(R.id.btn_pause).setOnClickListener {
+
+        }
     }
 
     private fun playSong(song : File){
@@ -67,7 +66,12 @@ class MainActivity : AppCompatActivity(),
     }
 
 
-    private fun setAdapter(listOfSongs : ArrayList<File>){
+
+    override fun initView(list: List<Song>) {
+        setAdapter(list)
+    }
+
+    private fun setAdapter(listOfSongs : List<Song>){
         musicViewAdapter =
             MusicViewAdapter(
                 listOfSongs,
@@ -78,7 +82,11 @@ class MainActivity : AppCompatActivity(),
         songlistview.adapter = musicViewAdapter
     }
 
-    override fun onItemClick(file: File) {
+    override fun updateScreenNewSong(list: List<Song>) {
+
+    }
+
+    override fun onItemClick(song: Song) {
         showPopup()
     }
 
@@ -97,21 +105,26 @@ class MainActivity : AppCompatActivity(),
         removebutton.setOnClickListener {
 
         }
-
-
         dialog.show()
 
 
     }
 
-    override fun initView(list: List<Song>) {
 
-
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            presenter.getAllSongs()
+        }else{
+            Toast.makeText(this, "You need to give access to your storage", Toast.LENGTH_SHORT)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), PackageManager.PERMISSION_GRANTED)
+        }
     }
 
-    override fun updateScreenNewMessage(list: List<Song>) {
-        TODO("Not yet implemented")
-    }
 
 
 }
