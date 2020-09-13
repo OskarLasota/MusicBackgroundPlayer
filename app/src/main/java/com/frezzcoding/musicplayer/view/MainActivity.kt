@@ -1,29 +1,25 @@
-package com.frezzcoding.musicplayer
+package com.frezzcoding.musicplayer.view
 
 import android.Manifest
-import android.app.AlertDialog
 import android.app.Dialog
-import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
-import android.util.DisplayMetrics
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.GridLayout
-import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.activity_main.*
+import com.frezzcoding.musicplayer.R
+import com.frezzcoding.musicplayer.contracts.MainContract
+import com.frezzcoding.musicplayer.models.Song
+import com.frezzcoding.musicplayer.view.adapters.MusicViewAdapter
 import java.io.File
 
-class MainActivity : AppCompatActivity(), MusicViewAdapter.OnItemClickListener {
+class MainActivity : AppCompatActivity(),
+    MusicViewAdapter.OnItemClickListener, MainContract.View {
 
 
     private lateinit var mediaPlayer : MediaPlayer
@@ -72,7 +68,11 @@ class MainActivity : AppCompatActivity(), MusicViewAdapter.OnItemClickListener {
 
 
     private fun setAdapter(listOfSongs : ArrayList<File>){
-        musicViewAdapter = MusicViewAdapter(listOfSongs, this)
+        musicViewAdapter =
+            MusicViewAdapter(
+                listOfSongs,
+                this
+            )
         var songlistview = findViewById<RecyclerView>(R.id.layout_songlist)
         songlistview.layoutManager = GridLayoutManager(this, 1)
         songlistview.adapter = musicViewAdapter
@@ -102,6 +102,15 @@ class MainActivity : AppCompatActivity(), MusicViewAdapter.OnItemClickListener {
         dialog.show()
 
 
+    }
+
+    override fun initView(list: List<Song>) {
+
+
+    }
+
+    override fun updateScreenNewMessage(list: List<Song>) {
+        TODO("Not yet implemented")
     }
 
 
