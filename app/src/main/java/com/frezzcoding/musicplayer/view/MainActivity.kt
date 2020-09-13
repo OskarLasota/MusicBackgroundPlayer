@@ -17,7 +17,9 @@ import com.frezzcoding.musicplayer.R
 import com.frezzcoding.musicplayer.contracts.MainContract
 import com.frezzcoding.musicplayer.models.Song
 import com.frezzcoding.musicplayer.view.adapters.MusicViewAdapter
+import dagger.android.AndroidInjection
 import java.io.File
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(),
     MusicViewAdapter.OnItemClickListener, MainContract.View {
@@ -25,12 +27,13 @@ class MainActivity : AppCompatActivity(),
 
     private lateinit var mediaPlayer : MediaPlayer
     private lateinit var musicViewAdapter: MusicViewAdapter
-    private lateinit var listOfSongs : ArrayList<File>
+    @Inject lateinit var presenter : MainContract.Presenter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        AndroidInjection.inject(this)
 
         /*
         TODO 3 buttons , pause start stop
@@ -55,23 +58,10 @@ class MainActivity : AppCompatActivity(),
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-            obtainSongs()
+            presenter.getAllSongs()
         }else{
             Toast.makeText(this, "You need to give access to your storage", Toast.LENGTH_SHORT)
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), PackageManager.PERMISSION_GRANTED)
-        }
-    }
-
-    private fun obtainSongs(){
-        listOfSongs = arrayListOf()
-        var listOfFiles = File("/sdcard/Download")
-        listOfFiles?.let {
-            for(file in listOfFiles.listFiles()){
-                if(file.name.contains("mp3") || file.name.contains("mp4")) {
-                    listOfSongs.add(file)
-                }
-            }
-            setAdapter(listOfSongs)
         }
     }
 
@@ -81,7 +71,7 @@ class MainActivity : AppCompatActivity(),
     }
 
 
-    private fun setAdapter(listOfSongs : ArrayList<File>){
+    private fun setAdapter(listOfSongs : List<Song>){
         musicViewAdapter =
             MusicViewAdapter(
                 listOfSongs,
@@ -92,7 +82,7 @@ class MainActivity : AppCompatActivity(),
         songlistview.adapter = musicViewAdapter
     }
 
-    override fun onItemClick(file: File) {
+    override fun onItemClick(song: Song) {
         showPopup()
     }
 
@@ -111,20 +101,18 @@ class MainActivity : AppCompatActivity(),
         removebutton.setOnClickListener {
 
         }
-
-
         dialog.show()
 
 
     }
 
     override fun initView(list: List<Song>) {
-
+        setAdapter(list)
 
     }
 
     override fun updateScreenNewMessage(list: List<Song>) {
-        TODO("Not yet implemented")
+
     }
 
 

@@ -17,7 +17,7 @@ class SongModule {
         fun bindChatPresenter(songPresenter : SongPresenter) : MainContract.Presenter
 
         @Binds
-        fun bindModelState(songeModel: SongModel) : MainContract.Model
+        fun bindModelState(songModel: SongModel) : MainContract.Model
     }
 
 
