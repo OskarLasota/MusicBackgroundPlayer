@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.GridLayoutManager
@@ -36,9 +37,9 @@ class MainActivity : AppCompatActivity(),
         TODO play in background
         TODO allow name change of each song OR remove from the list - store in a roomdatabase
          */
+        //permissions
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), PackageManager.PERMISSION_GRANTED)
 
-
-        obtainSongs()
         setListeners()
 
     }
@@ -47,18 +48,31 @@ class MainActivity : AppCompatActivity(),
 
     }
 
-    private fun obtainSongs(){
-        //permissions
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), PackageManager.PERMISSION_GRANTED)
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            obtainSongs()
+        }else{
+            Toast.makeText(this, "You need to give access to your storage", Toast.LENGTH_SHORT)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), PackageManager.PERMISSION_GRANTED)
+        }
+    }
 
+    private fun obtainSongs(){
         listOfSongs = arrayListOf()
         var listOfFiles = File("/sdcard/Download")
-        for(file in listOfFiles.listFiles()){
-            if(file.name.contains("mp3") || file.name.contains("mp4")) {
-                listOfSongs.add(file)
+        listOfFiles?.let {
+            for(file in listOfFiles.listFiles()){
+                if(file.name.contains("mp3") || file.name.contains("mp4")) {
+                    listOfSongs.add(file)
+                }
             }
+            setAdapter(listOfSongs)
         }
-        setAdapter(listOfSongs)
     }
 
     private fun playSong(song : File){
