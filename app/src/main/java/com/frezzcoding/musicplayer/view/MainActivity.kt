@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity(),
         TODO 3 buttons , pause start stop
         TODO play in background
         TODO allow name change of each song OR remove from the list - store in a roomdatabase
+        TODO maybe make a list of songs users can download songs from
          */
         //permissions
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), PackageManager.PERMISSION_GRANTED)
@@ -48,20 +49,14 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun setListeners(){
+        findViewById<Button>(R.id.btn_play).setOnClickListener {
 
-    }
+        }
+        findViewById<Button>(R.id.btn_restart).setOnClickListener {
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-            presenter.getAllSongs()
-        }else{
-            Toast.makeText(this, "You need to give access to your storage", Toast.LENGTH_SHORT)
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), PackageManager.PERMISSION_GRANTED)
+        }
+        findViewById<Button>(R.id.btn_pause).setOnClickListener {
+
         }
     }
 
@@ -70,6 +65,11 @@ class MainActivity : AppCompatActivity(),
         mediaPlayer.start()
     }
 
+
+
+    override fun initView(list: List<Song>) {
+        setAdapter(list)
+    }
 
     private fun setAdapter(listOfSongs : List<Song>){
         musicViewAdapter =
@@ -80,6 +80,10 @@ class MainActivity : AppCompatActivity(),
         var songlistview = findViewById<RecyclerView>(R.id.layout_songlist)
         songlistview.layoutManager = GridLayoutManager(this, 1)
         songlistview.adapter = musicViewAdapter
+    }
+
+    override fun updateScreenNewMessage(list: List<Song>) {
+
     }
 
     override fun onItemClick(song: Song) {
@@ -106,14 +110,21 @@ class MainActivity : AppCompatActivity(),
 
     }
 
-    override fun initView(list: List<Song>) {
-        setAdapter(list)
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            presenter.getAllSongs()
+        }else{
+            Toast.makeText(this, "You need to give access to your storage", Toast.LENGTH_SHORT)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), PackageManager.PERMISSION_GRANTED)
+        }
     }
 
-    override fun updateScreenNewMessage(list: List<Song>) {
-
-    }
 
 
 }
