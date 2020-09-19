@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.frezzcoding.musicplayer.R
 import com.frezzcoding.musicplayer.contracts.MainContract
@@ -78,7 +79,7 @@ class MainActivity : AppCompatActivity(),
                 this
             )
         var songlistview = findViewById<RecyclerView>(R.id.layout_songlist)
-        songlistview.layoutManager = GridLayoutManager(this, 1)
+        songlistview.layoutManager = LinearLayoutManager(this)
         songlistview.adapter = musicViewAdapter
     }
 

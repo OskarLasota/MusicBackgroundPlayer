@@ -12,6 +12,7 @@ class SongPresenter @Inject constructor(private val view : MainContract.View, pr
 
     init{
         var songs = getAllSongs()
+        view.initView(songs) // temporary
         compareToCache(songs)
 
     }
@@ -27,7 +28,6 @@ class SongPresenter @Inject constructor(private val view : MainContract.View, pr
                 }
             }
         }
-
         return listOfSongs
     }
 
@@ -68,7 +68,7 @@ class SongPresenter @Inject constructor(private val view : MainContract.View, pr
             }
 
 
-            view.initView(model.getStoredSongs())
+           // view.initView(model.getStoredSongs())
         }
     }
 
