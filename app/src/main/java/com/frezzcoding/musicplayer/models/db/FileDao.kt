@@ -15,7 +15,7 @@ interface FileDao {
     fun delete(song : Song)
 
     @Query("select * from song_table")
-    fun getSongs() : Song
+    fun getSongs() : List<Song>
 
     @Query("DELETE from song_table")
     fun removeAllSongs()

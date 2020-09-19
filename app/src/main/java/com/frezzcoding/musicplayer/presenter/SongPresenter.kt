@@ -12,7 +12,6 @@ class SongPresenter @Inject constructor(private val view : MainContract.View, pr
 
     init{
         var songs = getAllSongs()
-        view.initView(songs) // temporary
         compareToCache(songs)
 
     }
@@ -24,7 +23,7 @@ class SongPresenter @Inject constructor(private val view : MainContract.View, pr
         listOfFiles.listFiles()?.let { filelist ->
             for (file in filelist) {
                 if (file.name.contains("mp3") || file.name.contains("mp4")) {
-                    listOfSongs.add(Song(0, file.name, file))
+                    listOfSongs.add(Song(0, file.name))
                 }
             }
         }
@@ -32,6 +31,7 @@ class SongPresenter @Inject constructor(private val view : MainContract.View, pr
     }
 
     private fun compareToCache(songs : List<Song>){
+       /*
         //compare each song with the existing song in the cache then update view
         CoroutineScope(Dispatchers.IO).launch {
             var cachedSongs = model.getStoredSongs()
@@ -68,8 +68,10 @@ class SongPresenter @Inject constructor(private val view : MainContract.View, pr
             }
 
 
-           // view.initView(model.getStoredSongs())
+           view.initView(model.getStoredSongs())
         }
+
+        */
     }
 
 
