@@ -10,7 +10,7 @@ interface MainContract {
     }
 
     interface Presenter {
-        fun getAllSongs() : List<Song>
+        fun getAllSongs()
         fun insertSong(song : Song)
     }
 

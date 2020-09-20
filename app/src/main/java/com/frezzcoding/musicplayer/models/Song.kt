@@ -6,4 +6,4 @@ import java.io.File
 import java.io.Serializable
 
 @Entity(tableName="song_table")
-data class Song(@PrimaryKey var id: Int = 0, var name : String) : Serializable
+data class Song(@PrimaryKey var id: Int = 0, var primaryname : String, var updatedName: String = "") : Serializable

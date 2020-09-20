@@ -5,18 +5,14 @@ import com.frezzcoding.musicplayer.models.Song
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
 class SongPresenter @Inject constructor(private val view : MainContract.View, private val model : MainContract.Model) : MainContract.Presenter{
 
-    init{
-        var songs = getAllSongs()
-        compareToCache(songs)
 
-    }
-
-    override fun getAllSongs() : List<Song>{
+    override fun getAllSongs(){
 
         var listOfSongs : ArrayList<Song> = arrayListOf()
         var listOfFiles = File("/sdcard/Download")
@@ -27,11 +23,10 @@ class SongPresenter @Inject constructor(private val view : MainContract.View, pr
                 }
             }
         }
-        return listOfSongs
+        compareToCache(listOfSongs)
     }
 
     private fun compareToCache(songs : List<Song>){
-       /*
         //compare each song with the existing song in the cache then update view
         CoroutineScope(Dispatchers.IO).launch {
             var cachedSongs = model.getStoredSongs()
@@ -42,13 +37,13 @@ class SongPresenter @Inject constructor(private val view : MainContract.View, pr
                     var found = false
                     cachedSongs.let {
                         for(cachedsong in cachedSongs){
-                            if(song.file == cachedsong.file){
+                            if(song.primaryname == cachedsong.primaryname){
                                 found = true
                             }
                             if(!checkedDeleted){
                                 var cachedSongFound = false
                                 for(songcheck in songs){
-                                    if(cachedsong.file == songcheck.file){
+                                    if(cachedsong.primaryname == songcheck.primaryname){
                                         cachedSongFound = true
                                     }
                                 }
@@ -66,12 +61,13 @@ class SongPresenter @Inject constructor(private val view : MainContract.View, pr
                     }
                 }
             }
-
-
-           view.initView(model.getStoredSongs())
+            var result = model.getStoredSongs()
+            withContext(Dispatchers.Main){
+                view.initView(result)
+            }
         }
 
-        */
+
     }
 
 

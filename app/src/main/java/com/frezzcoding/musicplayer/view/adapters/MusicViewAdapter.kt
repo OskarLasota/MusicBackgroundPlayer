@@ -5,10 +5,8 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.frezzcoding.musicplayer.R
-import com.frezzcoding.musicplayer.databinding.MusiclistCardBinding
 import com.frezzcoding.musicplayer.databinding.SongItemLayoutBinding
 import com.frezzcoding.musicplayer.models.Song
-import java.io.File
 
 
 class MusicViewAdapter(private val data : List<Song>, val listener : OnItemClickListener) : RecyclerView.Adapter<MusicViewAdapter.ViewHolder>() {
