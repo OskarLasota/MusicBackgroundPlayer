@@ -11,6 +11,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -88,11 +89,18 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onItemClick(song: Song) {
-        showPopup()
+        //should show button layout with an animation on click
+        mediaPlayer.stop()
+        mediaPlayer = MediaPlayer.create(this, Uri.fromFile(presenter.getFileFromSong(song)))
+        mediaPlayer.start()
+    }
+
+    override fun onEditClick(song: Song) {
+        showPopup(song)
     }
 
 
-    private fun showPopup(){
+    private fun showPopup(song : Song){
 
         var dialog = Dialog(this)
         dialog.setContentView(R.layout.popup_editname)
@@ -101,7 +109,9 @@ class MainActivity : AppCompatActivity(),
         var removebutton = dialog.findViewById<Button>(R.id.btn_remove)
         var submitbutton = dialog.findViewById<Button>(R.id.btn_confirm)
         submitbutton.setOnClickListener {
-
+            song.updatedName = inputfield.text.toString()
+            presenter.editSong(song)
+            dialog.dismiss()
         }
         removebutton.setOnClickListener {
 

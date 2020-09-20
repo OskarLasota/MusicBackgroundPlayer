@@ -2,14 +2,24 @@ package com.frezzcoding.musicplayer.presenter
 
 import com.frezzcoding.musicplayer.contracts.MainContract
 import com.frezzcoding.musicplayer.models.Song
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.io.File
 import javax.inject.Inject
 
 class SongPresenter @Inject constructor(private val view : MainContract.View, private val model : MainContract.Model) : MainContract.Presenter{
+
+
+    override fun getFileFromSong(song: Song) : File? {
+        var listOfFiles = File("/sdcard/Download")
+        listOfFiles.listFiles()?.let { filelist ->
+            for (file in filelist) {
+                if (file.name == song.primaryname) {
+                    return file
+                }
+            }
+        }
+        return null
+    }
 
 
     override fun getAllSongs(){
@@ -30,7 +40,6 @@ class SongPresenter @Inject constructor(private val view : MainContract.View, pr
         //compare each song with the existing song in the cache then update view
         CoroutineScope(Dispatchers.IO).launch {
             var cachedSongs = model.getStoredSongs()
-
             songs?.let {
                 var checkedDeleted = false
                 for(song in songs){
@@ -73,6 +82,19 @@ class SongPresenter @Inject constructor(private val view : MainContract.View, pr
 
     override fun insertSong(song: Song) {
         TODO("Not yet implemented")
+    }
+
+    override fun editSong(song : Song){
+        CoroutineScope(Dispatchers.IO).launch {
+            model.editSong(song)
+            var newlist = model.getStoredSongs()
+            withContext(Dispatchers.Main){
+                println(newlist)
+                view.initView(newlist)
+            }
+        }
+
+
     }
 
 }

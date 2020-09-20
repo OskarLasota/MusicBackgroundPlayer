@@ -20,8 +20,8 @@ interface FileDao {
     @Query("DELETE from song_table")
     fun removeAllSongs()
 
-    @Query("UPDATE song_table SET id = :id")
-    fun updateId(id : Int)
+    @Query("UPDATE song_table SET updatedName = :updatedName WHERE id = :id")
+    fun updateSong(id : Int, updatedName : String)
 
 
 
