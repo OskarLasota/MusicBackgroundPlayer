@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity(),
     MusicViewAdapter.OnItemClickListener, MainContract.View {
 
 
-    private lateinit var mediaPlayer : MediaPlayer
+    private var mediaPlayer : MediaPlayer? = null
     private lateinit var musicViewAdapter: MusicViewAdapter
     @Inject lateinit var presenter : MainContract.Presenter
 
@@ -62,9 +62,12 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    private fun playSong(song : File){
-        mediaPlayer = MediaPlayer.create(this, Uri.fromFile(song))
-        mediaPlayer.start()
+    private fun playSong(song : Song){
+        mediaPlayer?.let {
+            mediaPlayer!!.stop()
+        }
+        mediaPlayer = MediaPlayer.create(this, Uri.fromFile(presenter.getFileFromSong(song)))
+        mediaPlayer!!.start()
     }
 
 
@@ -90,9 +93,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onItemClick(song: Song) {
         //should show button layout with an animation on click
-        mediaPlayer.stop()
-        mediaPlayer = MediaPlayer.create(this, Uri.fromFile(presenter.getFileFromSong(song)))
-        mediaPlayer.start()
+        playSong(song)
     }
 
     override fun onEditClick(song: Song) {
