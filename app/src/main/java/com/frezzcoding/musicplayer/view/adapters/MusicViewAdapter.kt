@@ -38,7 +38,7 @@ class MusicViewAdapter(private val data : List<Song>, val listener : OnItemClick
             binding.song = song
 
             binding.topLayout.setOnClickListener {
-                listener.onItemClick(song)
+                listener.onSongClick(song)
             }
 
             binding.ivEdit.setOnClickListener {
@@ -50,7 +50,7 @@ class MusicViewAdapter(private val data : List<Song>, val listener : OnItemClick
 
 
     interface OnItemClickListener{
-        fun onItemClick(song: Song)
+        fun onSongClick(song: Song)
         fun onEditClick(song: Song)
     }
 

@@ -11,8 +11,6 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.net.toUri
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.frezzcoding.musicplayer.R
@@ -20,7 +18,6 @@ import com.frezzcoding.musicplayer.contracts.MainContract
 import com.frezzcoding.musicplayer.models.Song
 import com.frezzcoding.musicplayer.view.adapters.MusicViewAdapter
 import dagger.android.AndroidInjection
-import java.io.File
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(),
@@ -38,9 +35,7 @@ class MainActivity : AppCompatActivity(),
         AndroidInjection.inject(this)
 
         /*
-        TODO 3 buttons , pause start stop
         TODO play in background
-        TODO allow name change of each song OR remove from the list - store in a roomdatabase
         TODO maybe make a list of songs users can download songs from
          */
         //permissions
@@ -52,13 +47,19 @@ class MainActivity : AppCompatActivity(),
 
     private fun setListeners(){
         findViewById<Button>(R.id.btn_play).setOnClickListener {
-
+            mediaPlayer?.let {
+                mediaPlayer!!.start()
+            }
         }
         findViewById<Button>(R.id.btn_restart).setOnClickListener {
-
+            mediaPlayer?.let {
+                mediaPlayer!!.stop()
+            }
         }
         findViewById<Button>(R.id.btn_pause).setOnClickListener {
-
+            mediaPlayer?.let {
+                mediaPlayer!!.pause()
+            }
         }
     }
 
@@ -87,11 +88,8 @@ class MainActivity : AppCompatActivity(),
         songlistview.adapter = musicViewAdapter
     }
 
-    override fun updateScreenNewSong(list: List<Song>) {
 
-    }
-
-    override fun onItemClick(song: Song) {
+    override fun onSongClick(song: Song) {
         //should show button layout with an animation on click
         playSong(song)
     }
@@ -102,12 +100,11 @@ class MainActivity : AppCompatActivity(),
 
 
     private fun showPopup(song : Song){
-
         var dialog = Dialog(this)
         dialog.setContentView(R.layout.popup_editname)
 
         var inputfield = dialog.findViewById<EditText>(R.id.et_newtitle)
-        var removebutton = dialog.findViewById<Button>(R.id.btn_remove)
+        var removebutton = dialog.findViewById<Button>(R.id.btn_hidesong)
         var submitbutton = dialog.findViewById<Button>(R.id.btn_confirm)
         submitbutton.setOnClickListener {
             song.updatedName = inputfield.text.toString()
@@ -115,10 +112,9 @@ class MainActivity : AppCompatActivity(),
             dialog.dismiss()
         }
         removebutton.setOnClickListener {
-
+            //should hide and not remove
         }
         dialog.show()
-
 
     }
 

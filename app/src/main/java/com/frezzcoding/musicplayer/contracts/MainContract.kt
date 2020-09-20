@@ -7,7 +7,6 @@ interface MainContract {
 
     interface View {
         fun initView(list : List<Song>)
-        fun updateScreenNewSong(list : List<Song>)
     }
 
     interface Presenter {
