@@ -6,26 +6,25 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.frezzcoding.musicplayer.models.Song
 
-@Database(entities = [Song::class], version = 1, exportSchema = false)
+@Database(entities = [Song::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase(){
     abstract fun fileDao() : FileDao
+
 
 
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
+
         fun getInstance(context: Context): AppDatabase {
-            synchronized(this) {
-                var instance = INSTANCE
-                if (instance == null) {
-                    instance = Room.databaseBuilder(
-                        context.applicationContext,
-                        AppDatabase::class.java,
-                        "song_database"
-                    ).build()
-                }
-                return instance
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
             }
         }
+
+        private fun buildDatabase(context: Context): AppDatabase {
+            return Room.databaseBuilder(context, AppDatabase::class.java, "song_database").build()
+        }
     }
+
 }

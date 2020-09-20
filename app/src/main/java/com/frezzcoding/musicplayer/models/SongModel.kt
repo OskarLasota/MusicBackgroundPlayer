@@ -1,15 +1,26 @@
 package com.frezzcoding.musicplayer.models
 
 import com.frezzcoding.musicplayer.contracts.MainContract
+import com.frezzcoding.musicplayer.models.db.FileDao
 import javax.inject.Inject
 
-class SongModel @Inject constructor() : MainContract.Model {
+class SongModel @Inject constructor(var fileDao: FileDao) : MainContract.Model {
+
+
     override fun getStoredSongs(): List<Song> {
-        return arrayListOf()
+        return fileDao.getSongs()
     }
 
-    override fun insertSong(message: Song) {
+    override fun insertSong(song: Song) {
+        fileDao.insert(song)
+    }
 
+    override fun removeSong(song: Song) {
+        fileDao.delete(song)
+    }
+
+    override fun editSong(song: Song) {
+        fileDao.updateSong(song.id, song.updatedName)
     }
 
 

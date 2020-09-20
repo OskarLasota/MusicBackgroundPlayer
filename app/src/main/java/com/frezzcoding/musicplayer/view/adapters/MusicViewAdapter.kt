@@ -5,19 +5,18 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.frezzcoding.musicplayer.R
-import com.frezzcoding.musicplayer.databinding.MusiclistCardBinding
+import com.frezzcoding.musicplayer.databinding.SongItemLayoutBinding
 import com.frezzcoding.musicplayer.models.Song
-import java.io.File
 
 
 class MusicViewAdapter(private val data : List<Song>, val listener : OnItemClickListener) : RecyclerView.Adapter<MusicViewAdapter.ViewHolder>() {
 
-    private lateinit var binding : MusiclistCardBinding
+    private lateinit var binding : SongItemLayoutBinding
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         var inflater : LayoutInflater = LayoutInflater.from(parent.context)
         binding = DataBindingUtil.inflate(inflater,
-            R.layout.musiclist_card, parent, false)
+            R.layout.song_item_layout, parent, false)
 
         return ViewHolder(
             binding
@@ -32,14 +31,18 @@ class MusicViewAdapter(private val data : List<Song>, val listener : OnItemClick
         holder.bind(data[position], listener)
     }
 
-    class ViewHolder(private var binding : MusiclistCardBinding) : RecyclerView.ViewHolder(binding.root){
+    class ViewHolder(private var binding : SongItemLayoutBinding) : RecyclerView.ViewHolder(binding.root){
 
 
         fun bind(song : Song, listener : OnItemClickListener){
             binding.song = song
 
+            binding.topLayout.setOnClickListener {
+                listener.onSongClick(song)
+            }
+
             binding.ivEdit.setOnClickListener {
-                listener.onItemClick(song)
+                listener.onEditClick(song)
             }
         }
     }
@@ -47,7 +50,8 @@ class MusicViewAdapter(private val data : List<Song>, val listener : OnItemClick
 
 
     interface OnItemClickListener{
-        fun onItemClick(song: Song)
+        fun onSongClick(song: Song)
+        fun onEditClick(song: Song)
     }
 
 
