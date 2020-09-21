@@ -17,6 +17,7 @@ import com.frezzcoding.musicplayer.R
 import com.frezzcoding.musicplayer.contracts.MainContract
 import com.frezzcoding.musicplayer.models.Song
 import com.frezzcoding.musicplayer.view.adapters.MusicViewAdapter
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.android.AndroidInjection
 import javax.inject.Inject
 
@@ -46,17 +47,17 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun setListeners(){
-        findViewById<Button>(R.id.btn_play).setOnClickListener {
+        findViewById<FloatingActionButton>(R.id.btn_play).setOnClickListener {
             mediaPlayer?.let {
                 mediaPlayer!!.start()
             }
         }
-        findViewById<Button>(R.id.btn_restart).setOnClickListener {
+        findViewById<FloatingActionButton>(R.id.btn_stop).setOnClickListener {
             mediaPlayer?.let {
                 mediaPlayer!!.stop()
             }
         }
-        findViewById<Button>(R.id.btn_pause).setOnClickListener {
+        findViewById<FloatingActionButton>(R.id.btn_pause).setOnClickListener {
             mediaPlayer?.let {
                 mediaPlayer!!.pause()
             }
