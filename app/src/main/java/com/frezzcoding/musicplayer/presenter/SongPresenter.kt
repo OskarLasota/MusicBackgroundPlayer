@@ -1,12 +1,22 @@
 package com.frezzcoding.musicplayer.presenter
 
+import android.content.Context
+import android.media.MediaMetadataRetriever
+import android.net.Uri
+import com.frezzcoding.musicplayer.common.extensions.round
 import com.frezzcoding.musicplayer.contracts.MainContract
 import com.frezzcoding.musicplayer.models.Song
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
+import java.lang.Math.round
+import java.math.BigDecimal
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class SongPresenter @Inject constructor(private val view : MainContract.View, private val model : MainContract.Model) : MainContract.Presenter{
+class SongPresenter @Inject constructor(private val view : MainContract.View, private val model : MainContract.Model, private val context : Context) : MainContract.Presenter{
 
 
     override fun getFileFromSong(song: Song) : File? {
@@ -29,7 +39,12 @@ class SongPresenter @Inject constructor(private val view : MainContract.View, pr
         listOfFiles.listFiles()?.let { filelist ->
             for (file in filelist) {
                 if (file.name.contains("mp3") || file.name.contains("mp4")) {
-                    listOfSongs.add(Song(0, file.name))
+                    //find duration
+                    var retriever = MediaMetadataRetriever()
+                    retriever.setDataSource(context, Uri.fromFile(file))
+                    val time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+
+                    listOfSongs.add(Song(0, file.name, "", time.toLong().round()))
                 }
             }
         }

@@ -22,6 +22,8 @@ abstract class AppModule {
     @Binds
     abstract fun bindMainView(mainActivity: MainActivity) : MainContract.View
 
+    @Binds
+    abstract fun bindContext(context: App) : Context
 
     @Module
     companion object {

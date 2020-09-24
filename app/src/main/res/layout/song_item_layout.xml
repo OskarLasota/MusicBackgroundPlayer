@@ -57,7 +57,7 @@
         android:maxLines="1"
         android:textColor="#fff"
         app:drawableStartCompat="@drawable/ic_time"
-        tools:text="03:20" />
+        tools:text="@{song.duration}" />
 
 
 </RelativeLayout>
