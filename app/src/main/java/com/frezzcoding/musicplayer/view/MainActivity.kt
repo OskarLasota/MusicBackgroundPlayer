@@ -6,10 +6,12 @@ import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +29,10 @@ class MainActivity : AppCompatActivity(),
 
     private var mediaPlayer : MediaPlayer? = null
     private lateinit var musicViewAdapter: MusicViewAdapter
+    private lateinit var buttonLayout : ConstraintLayout
+    private lateinit var btnPlay : FloatingActionButton
+    private lateinit var btnStop : FloatingActionButton
+    private lateinit var btnPause : FloatingActionButton
     @Inject lateinit var presenter : MainContract.Presenter
 
 
@@ -42,24 +48,38 @@ class MainActivity : AppCompatActivity(),
         //permissions
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), PackageManager.PERMISSION_GRANTED)
 
+        init()
         setListeners()
 
     }
+    private fun init(){
+        buttonLayout = findViewById(R.id.layout_buttons)
+        btnPlay = findViewById(R.id.btn_play)
+        btnPause = findViewById(R.id.btn_pause)
+        btnStop = findViewById(R.id.btn_stop)
+    }
 
     private fun setListeners(){
-        findViewById<FloatingActionButton>(R.id.btn_play).setOnClickListener {
+        btnPlay.setOnClickListener {
             mediaPlayer?.let {
                 mediaPlayer!!.start()
+                if(mediaPlayer!!.isPlaying){
+                    btnPlay.hide()
+                    btnPause.show()
+                }
             }
         }
-        findViewById<FloatingActionButton>(R.id.btn_stop).setOnClickListener {
+        btnStop.setOnClickListener {
             mediaPlayer?.let {
                 mediaPlayer!!.stop()
+                btnPlay.show()
             }
         }
-        findViewById<FloatingActionButton>(R.id.btn_pause).setOnClickListener {
+        btnPause.setOnClickListener {
             mediaPlayer?.let {
                 mediaPlayer!!.pause()
+                btnPlay.show()
+                btnPause.hide()
             }
         }
     }
@@ -93,12 +113,19 @@ class MainActivity : AppCompatActivity(),
     override fun onSongClick(song: Song) {
         //should show button layout with an animation on click
         playSong(song)
+        showControlButtons()
     }
 
     override fun onEditClick(song: Song) {
         showPopup(song)
     }
 
+
+    private fun showControlButtons(){
+        buttonLayout.visibility = View.VISIBLE
+        btnPause.show()
+        btnPlay.hide()
+    }
 
     private fun showPopup(song : Song){
         var dialog = Dialog(this)
