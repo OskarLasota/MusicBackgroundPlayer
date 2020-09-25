@@ -5,4 +5,5 @@
     <color name="colorAccent">#c2c2d6</color>
     <color name="background">#727b8d</color>
     <color name="song_card">#ff4d4d</color>
+    <color name="song_card_selected">#ad1a1a</color>
 </resources>

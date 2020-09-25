@@ -44,6 +44,7 @@ class MainActivity : AppCompatActivity(),
         /*
         TODO play in background
         TODO maybe make a list of songs users can download songs from
+        TODO when song finishes playing, change pause button to play
          */
         //permissions
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), PackageManager.PERMISSION_GRANTED)
