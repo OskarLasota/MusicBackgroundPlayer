@@ -61,6 +61,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun setListeners(){
+
         btnPlay.setOnClickListener {
             mediaPlayer?.let {
                 mediaPlayer!!.start()
@@ -90,6 +91,10 @@ class MainActivity : AppCompatActivity(),
             mediaPlayer!!.stop()
         }
         mediaPlayer = MediaPlayer.create(this, Uri.fromFile(presenter.getFileFromSong(song)))
+        mediaPlayer?.setOnCompletionListener{
+            btnPause.hide()
+            btnPlay.show()
+        }
         mediaPlayer!!.start()
     }
 
