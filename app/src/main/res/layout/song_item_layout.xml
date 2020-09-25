@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.7"
             android:text="@{song.updatedName.length() > 0 ? song.updatedName : song.primaryname}"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/title_colour"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -55,7 +55,7 @@
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:maxLines="1"
-        android:textColor="#fff"
+        android:textColor="@color/text_colour"
         app:drawableStartCompat="@drawable/ic_time"
         tools:text='@{song.duration.equals("00:00") ? "00:01" : song.duration}' />
 

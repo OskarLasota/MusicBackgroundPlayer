@@ -45,6 +45,8 @@ class MainActivity : AppCompatActivity(),
         TODO play in background
         TODO maybe make a list of songs users can download songs from
         TODO when song finishes playing, change pause button to play
+        TODO when stop is pressed, unselect the song OR hold a reference so when play is pressed then it works
+        TODO PASTE YOUTUBE URL AND DOWNLOAD SONG
          */
         //permissions
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), PackageManager.PERMISSION_GRANTED)

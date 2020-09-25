@@ -2,8 +2,10 @@
 <resources>
     <color name="colorPrimary">#29293d</color>
     <color name="colorPrimaryDark">#14141f</color>
-    <color name="colorAccent">#c2c2d6</color>
-    <color name="background">#727b8d</color>
-    <color name="song_card">#ff4d4d</color>
-    <color name="song_card_selected">#ad1a1a</color>
+    <color name="colorAccent">#343030</color>
+    <color name="background">#000000</color>
+    <color name="song_card">#4c4646</color>
+    <color name="song_card_selected">#6f6868</color>
+    <color name="text_colour">#fff</color>
+    <color name="title_colour">#000000</color>
 </resources>
