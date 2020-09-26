@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity(),
     private lateinit var btnStop : FloatingActionButton
     private lateinit var btnPause : FloatingActionButton
     @Inject lateinit var presenter : MainContract.Presenter
+    private lateinit var currentSong: Song
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,6 +77,7 @@ class MainActivity : AppCompatActivity(),
         btnStop.setOnClickListener {
             mediaPlayer?.let {
                 mediaPlayer!!.stop()
+                mediaPlayer = MediaPlayer.create(this, Uri.fromFile(presenter.getFileFromSong(currentSong)))
                 btnPlay.show()
             }
         }
@@ -121,6 +123,7 @@ class MainActivity : AppCompatActivity(),
     override fun onSongClick(song: Song) {
         //should show button layout with an animation on click
         playSong(song)
+        currentSong = song
         showControlButtons()
     }
 
