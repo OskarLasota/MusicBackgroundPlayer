@@ -2,6 +2,7 @@ package com.frezzcoding.musicplayer.view
 
 import android.Manifest
 import android.app.Dialog
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.net.Uri
@@ -13,9 +14,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.frezzcoding.musicplayer.R
+import com.frezzcoding.musicplayer.common.services.MusicService
 import com.frezzcoding.musicplayer.contracts.MainContract
 import com.frezzcoding.musicplayer.models.Song
 import com.frezzcoding.musicplayer.view.adapters.MusicViewAdapter
@@ -45,8 +48,6 @@ class MainActivity : AppCompatActivity(),
         /*
         TODO play in background
         TODO maybe make a list of songs users can download songs from
-        TODO when song finishes playing, change pause button to play
-        TODO when stop is pressed, unselect the song OR hold a reference so when play is pressed then it works
         TODO PASTE YOUTUBE URL AND DOWNLOAD SONG
          */
         //permissions
@@ -56,6 +57,18 @@ class MainActivity : AppCompatActivity(),
         setListeners()
 
     }
+
+    private fun startService(){
+        var serviceIntent  = Intent(this, MusicService::class.java)
+        serviceIntent.putExtra("song", currentSong)
+        ContextCompat.startForegroundService(this, serviceIntent)
+    }
+
+    private fun stopService() {
+        var serviceIntent = Intent(this, MusicService::class.java)
+        stopService(serviceIntent)
+    }
+
     private fun init(){
         buttonLayout = findViewById(R.id.layout_buttons)
         btnPlay = findViewById(R.id.btn_play)
@@ -79,6 +92,7 @@ class MainActivity : AppCompatActivity(),
                 mediaPlayer!!.stop()
                 mediaPlayer = MediaPlayer.create(this, Uri.fromFile(presenter.getFileFromSong(currentSong)))
                 btnPlay.show()
+                stopService()
             }
         }
         btnPause.setOnClickListener {
@@ -99,6 +113,7 @@ class MainActivity : AppCompatActivity(),
         mediaPlayer?.setOnCompletionListener{
             btnPause.hide()
             btnPlay.show()
+            stopService()
         }
         mediaPlayer!!.start()
     }
@@ -126,6 +141,7 @@ class MainActivity : AppCompatActivity(),
         playSong(song)
         currentSong = song
         showControlButtons()
+        startService()
     }
 
     override fun onEditClick(song: Song) {
