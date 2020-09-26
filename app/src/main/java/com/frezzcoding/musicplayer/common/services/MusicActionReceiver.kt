@@ -7,7 +7,6 @@ import com.frezzcoding.musicplayer.models.Song
 
 class MusicActionReceiver : BroadcastReceiver() {
 
-
     override fun onReceive(context: Context?, intent: Intent?) {
         var action1 = intent?.getStringExtra("pause_button")
         var action2 = intent?.getStringExtra("play_button")
@@ -21,4 +20,7 @@ class MusicActionReceiver : BroadcastReceiver() {
         println(song)
 
     }
+
+
+
 }

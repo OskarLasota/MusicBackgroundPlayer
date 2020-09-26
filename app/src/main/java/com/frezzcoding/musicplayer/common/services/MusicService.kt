@@ -4,6 +4,7 @@ import android.app.Notification.EXTRA_NOTIFICATION_ID
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.os.Binder
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.frezzcoding.musicplayer.R
@@ -11,9 +12,17 @@ import com.frezzcoding.musicplayer.models.Song
 import com.frezzcoding.musicplayer.view.MainActivity
 
 class MusicService : Service() {
+
+
     private val CHANNEL_ID = "musicService"
-    override fun onCreate() {
-        super.onCreate()
+    val binder: IBinder = MusicServiceBinder()
+
+    inner class MusicServiceBinder : Binder(){
+        val service: MusicService = this@MusicService
+    }
+
+    fun test(){
+        println("test")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -50,6 +59,6 @@ class MusicService : Service() {
     }
 
     override fun onBind(intent: Intent?): IBinder? {
-        TODO("Not yet implemented")
+        return binder
     }
 }

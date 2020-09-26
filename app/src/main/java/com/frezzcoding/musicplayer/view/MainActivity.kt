@@ -2,11 +2,16 @@ package com.frezzcoding.musicplayer.view
 
 import android.Manifest
 import android.app.Dialog
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
+import android.os.IBinder
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -38,7 +43,9 @@ class MainActivity : AppCompatActivity(),
     private lateinit var btnPause : FloatingActionButton
     @Inject lateinit var presenter : MainContract.Presenter
     private lateinit var currentSong: Song
-
+    var service : MusicService? = null
+    private lateinit var serviceConnection: ServiceConnection
+    val TAG = MainActivity::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +57,22 @@ class MainActivity : AppCompatActivity(),
         TODO maybe make a list of songs users can download songs from
         TODO PASTE YOUTUBE URL AND DOWNLOAD SONG
          */
+        serviceConnection = object : ServiceConnection{
+            override fun onServiceDisconnected(componentName: ComponentName) {
+                println("service disconnected")
+                service = null
+            }
+
+            override fun onServiceConnected(componentName: ComponentName
+                                            , serviceBinder: IBinder
+            ) {
+                println("service connected")
+                service = (serviceBinder as MusicService.MusicServiceBinder).service
+            }
+
+        }
+
+
         //permissions
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), PackageManager.PERMISSION_GRANTED)
 
@@ -61,7 +84,7 @@ class MainActivity : AppCompatActivity(),
     private fun startService(){
         var serviceIntent  = Intent(this, MusicService::class.java)
         serviceIntent.putExtra("song", currentSong)
-        ContextCompat.startForegroundService(this, serviceIntent)
+        bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
     }
 
     private fun stopService() {
