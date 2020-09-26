@@ -93,6 +93,7 @@ class MainActivity : AppCompatActivity(),
     private fun playSong(song : Song){
         mediaPlayer?.let {
             mediaPlayer!!.stop()
+            mediaPlayer!!.release()
         }
         mediaPlayer = MediaPlayer.create(this, Uri.fromFile(presenter.getFileFromSong(song)))
         mediaPlayer?.setOnCompletionListener{
