@@ -86,9 +86,9 @@ class MusicService : Service() {
             .setContentText(contentText)
             .setOngoing(true)
             .setAutoCancel(false)
-            .addAction(R.mipmap.ic_launcher, "Pause", PendingIntent.getBroadcast(this, 0, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT))
-            .addAction(R.mipmap.ic_launcher, "Play", PendingIntent.getBroadcast(this, 0, playIntent,  PendingIntent.FLAG_IMMUTABLE))
-            .setSmallIcon(R.drawable.ic_edit)
+           // .addAction(R.mipmap.ic_launcher, "Pause", PendingIntent.getBroadcast(this, 0, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT))
+            //.addAction(R.mipmap.ic_launcher, "Play", PendingIntent.getBroadcast(this, 0, playIntent,  PendingIntent.FLAG_IMMUTABLE))
+            .setSmallIcon(R.drawable.ic_music)
             //.setContentIntent(pendingIntent)
             .build()
 

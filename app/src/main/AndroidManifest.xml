@@ -22,6 +22,9 @@
         </activity>
         <service android:name=".common.services.MusicService"/>
         <receiver android:name=".common.services.MusicActionReceiver"/>
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-6413313217193048~7394035050"/>
     </application>
 
 </manifest>

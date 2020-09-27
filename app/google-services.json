@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1089731838279",
+    "firebase_url": "https://musicplayer-55997.firebaseio.com",
+    "project_id": "musicplayer-55997",
+    "storage_bucket": "musicplayer-55997.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1089731838279:android:4e10a3bd549b38d9df8c62",
+        "android_client_info": {
+          "package_name": "com.frezzcoding.songplayer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1089731838279-hq5dne7pgd0s4i1qc78vrm3n4e6c27fg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.frezzcoding.songplayer",
+            "certificate_hash": "51b41259890eebc539d81bcfeb38686a7b791456"
+          }
+        },
+        {
+          "client_id": "1089731838279-14sln8023n3ajvrirt085c4d889jf3q8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-pAUAdCAeDG_t3MX7X7T-welQ53isqOs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1089731838279-14sln8023n3ajvrirt085c4d889jf3q8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

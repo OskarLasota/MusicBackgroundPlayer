@@ -28,8 +28,14 @@ import com.frezzcoding.musicplayer.contracts.MainContract
 import com.frezzcoding.musicplayer.models.Song
 import com.frezzcoding.musicplayer.view.adapters.MusicViewAdapter
 import com.frezzcoding.musicplayer.view.callbacks.ServiceCallbacks
+import com.google.ads.mediation.admob.AdMobAdapter
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.android.AndroidInjection
+import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(),
@@ -63,6 +69,32 @@ class MainActivity : AppCompatActivity(),
 
         init()
         setListeners()
+        createAd()
+
+    }
+
+
+    private fun createAd(){
+        val extras = Bundle()
+        extras.putString("max_ad_content_rating", "G")
+        MobileAds.initialize(this)
+        val adRequest = AdRequest.Builder().addNetworkExtrasBundle(AdMobAdapter::class.java, extras).tagForChildDirectedTreatment(true).build()
+
+        ad_schedule.adListener  = object: AdListener(){
+            override fun onAdFailedToLoad(adError : LoadAdError) {
+                // Code to be executed when an ad request fails.
+                println("ad failed")
+                ad_layout.visibility = View.GONE
+            }
+            override fun onAdLoaded() {
+                println("ad loaded")
+                ad_layout.visibility = View.VISIBLE
+            }
+
+
+        }
+
+        ad_schedule.loadAd(adRequest)
 
     }
 
