@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity(),
     private lateinit var currentSong: Song
     var service : MusicService? = null
     private lateinit var serviceConnection: ServiceConnection
+    private var bounded = false
     val TAG = MainActivity::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,9 +88,16 @@ class MainActivity : AppCompatActivity(),
         bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
     }
 
-    private fun stopService() {
-        var serviceIntent = Intent(this, MusicService::class.java)
-        stopService(serviceIntent)
+    override fun onDestroy() {
+        unbindSafely()
+        super.onDestroy()
+    }
+
+    private fun unbindSafely(){
+        if(bounded){
+            unbindService(serviceConnection)
+            bounded = false
+        }
     }
 
     private fun init(){
@@ -115,7 +123,7 @@ class MainActivity : AppCompatActivity(),
                 mediaPlayer!!.stop()
                 mediaPlayer = MediaPlayer.create(this, Uri.fromFile(presenter.getFileFromSong(currentSong)))
                 btnPlay.show()
-                stopService()
+                unbindSafely()
             }
         }
         btnPause.setOnClickListener {
@@ -131,12 +139,13 @@ class MainActivity : AppCompatActivity(),
         mediaPlayer?.let {
             mediaPlayer!!.stop()
             mediaPlayer!!.release()
+            unbindSafely()
         }
         mediaPlayer = MediaPlayer.create(this, Uri.fromFile(presenter.getFileFromSong(song)))
         mediaPlayer?.setOnCompletionListener{
             btnPause.hide()
             btnPlay.show()
-            stopService()
+            unbindSafely()
         }
         mediaPlayer!!.start()
     }
