@@ -55,6 +55,7 @@ class MainActivity : AppCompatActivity(),
         TODO play in background
         TODO maybe make a list of songs users can download songs from
         TODO PASTE YOUTUBE URL AND DOWNLOAD SONG
+        TODO MAKE SURE NO MEMORY LEAK
          */
 
         //permissions
@@ -81,8 +82,11 @@ class MainActivity : AppCompatActivity(),
 
 
     private fun startService(){
-        var serviceIntent  = Intent(this, MusicService::class.java)
+        var serviceIntent  = Intent(this, MusicService::class.java).also {
+            it.putExtra("song", currentSong)
+        }
         bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+        startService(serviceIntent)
     }
 
     override fun onDestroy() {
@@ -92,6 +96,7 @@ class MainActivity : AppCompatActivity(),
 
     private fun unbindSafely(){
         unbindService(serviceConnection)
+        service!!.stopSelf()
     }
 
     private fun init(){
@@ -148,7 +153,9 @@ class MainActivity : AppCompatActivity(),
         if(service == null){
             startService()
         }else{
+            service!!.paused = false
             service!!.playSong(currentSong, presenter.getFileFromSong(currentSong)!!)
+            service!!.updateNotification()
         }
     }
 
