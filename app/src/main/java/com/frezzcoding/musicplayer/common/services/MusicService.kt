@@ -4,18 +4,24 @@ import android.app.Notification.EXTRA_NOTIFICATION_ID
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Binder
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.frezzcoding.musicplayer.R
 import com.frezzcoding.musicplayer.models.Song
 import com.frezzcoding.musicplayer.view.MainActivity
+import com.frezzcoding.musicplayer.view.callbacks.ServiceCallbacks
+import java.io.File
 
 class MusicService : Service() {
 
 
     private val CHANNEL_ID = "musicService"
     val binder: IBinder = MusicServiceBinder()
+    private var mediaPlayer : MediaPlayer? = null
+    private lateinit var callback : ServiceCallbacks
 
     inner class MusicServiceBinder : Binder(){
         val service: MusicService = this@MusicService
@@ -27,7 +33,7 @@ class MusicService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         var data = intent?.getSerializableExtra("song") as Song
-
+        println("on start command")
        // var notificationIntent = Intent(this, MainActivity::class.java)
        // var pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
         val pauseIntent = Intent(this, MusicActionReceiver::class.java).apply {
@@ -52,6 +58,25 @@ class MusicService : Service() {
 
         startForeground(1, notification)
         return START_NOT_STICKY
+    }
+
+    fun playSong(song : Song, file : File){
+        println("play song")
+        mediaPlayer?.let {
+            mediaPlayer!!.stop()
+            mediaPlayer!!.release()
+            //unbindSafely()
+        }
+        mediaPlayer = MediaPlayer.create(this, Uri.fromFile(file))
+        mediaPlayer?.setOnCompletionListener{
+            callback.onSongCompletion()
+        }
+        mediaPlayer!!.start()
+    }
+
+    fun setCallback(callback : ServiceCallbacks){
+        println("callback set")
+        this.callback = callback
     }
 
     override fun onDestroy() {

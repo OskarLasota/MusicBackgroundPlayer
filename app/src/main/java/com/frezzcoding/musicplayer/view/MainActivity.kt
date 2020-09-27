@@ -27,12 +27,13 @@ import com.frezzcoding.musicplayer.common.services.MusicService
 import com.frezzcoding.musicplayer.contracts.MainContract
 import com.frezzcoding.musicplayer.models.Song
 import com.frezzcoding.musicplayer.view.adapters.MusicViewAdapter
+import com.frezzcoding.musicplayer.view.callbacks.ServiceCallbacks
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.android.AndroidInjection
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(),
-    MusicViewAdapter.OnItemClickListener, MainContract.View {
+    MusicViewAdapter.OnItemClickListener, MainContract.View, ServiceCallbacks {
 
 
     private var mediaPlayer : MediaPlayer? = null
@@ -42,9 +43,8 @@ class MainActivity : AppCompatActivity(),
     private lateinit var btnStop : FloatingActionButton
     private lateinit var btnPause : FloatingActionButton
     @Inject lateinit var presenter : MainContract.Presenter
-    private lateinit var currentSong: Song
+    private lateinit var currentSong : Song
     var service : MusicService? = null
-    private lateinit var serviceConnection: ServiceConnection
     private var bounded = false
     val TAG = MainActivity::class.java.simpleName
 
@@ -58,21 +58,6 @@ class MainActivity : AppCompatActivity(),
         TODO maybe make a list of songs users can download songs from
         TODO PASTE YOUTUBE URL AND DOWNLOAD SONG
          */
-        serviceConnection = object : ServiceConnection{
-            override fun onServiceDisconnected(componentName: ComponentName) {
-                println("service disconnected")
-                service = null
-            }
-
-            override fun onServiceConnected(componentName: ComponentName
-                                            , serviceBinder: IBinder
-            ) {
-                println("service connected")
-                service = (serviceBinder as MusicService.MusicServiceBinder).service
-            }
-
-        }
-
 
         //permissions
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), PackageManager.PERMISSION_GRANTED)
@@ -82,9 +67,25 @@ class MainActivity : AppCompatActivity(),
 
     }
 
+    private var serviceConnection = object : ServiceConnection{
+        override fun onServiceDisconnected(componentName: ComponentName) {
+            println("service disconnected")
+            service = null
+        }
+
+        override fun onServiceConnected(componentName: ComponentName
+                                        , serviceBinder: IBinder
+        ) {
+            println("service connected")
+            service = (serviceBinder as MusicService.MusicServiceBinder).service
+            service!!.setCallback(this@MainActivity)
+            service!!.playSong(currentSong, presenter.getFileFromSong(currentSong)!!)
+        }
+    }
+
+
     private fun startService(){
         var serviceIntent  = Intent(this, MusicService::class.java)
-        serviceIntent.putExtra("song", currentSong)
         bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
     }
 
@@ -110,45 +111,27 @@ class MainActivity : AppCompatActivity(),
     private fun setListeners(){
 
         btnPlay.setOnClickListener {
-            mediaPlayer?.let {
-                mediaPlayer!!.start()
-                if(mediaPlayer!!.isPlaying){
-                    btnPlay.hide()
-                    btnPause.show()
-                }
+            if(!bounded){
+                btnPlay.hide()
+                btnPause.show()
+                bounded = true
+                //TODO call service method to play the song
             }
         }
         btnStop.setOnClickListener {
-            mediaPlayer?.let {
-                mediaPlayer!!.stop()
-                mediaPlayer = MediaPlayer.create(this, Uri.fromFile(presenter.getFileFromSong(currentSong)))
+            if(bounded){
+                //TODO call service method to stop the song
                 btnPlay.show()
-                unbindSafely()
+                //unbind?
             }
         }
         btnPause.setOnClickListener {
-            mediaPlayer?.let {
-                mediaPlayer!!.pause()
-                btnPlay.show()
-                btnPause.hide()
-            }
+            //TODO call service method to stop the song
+            btnPlay.show()
+            btnPause.hide()
         }
     }
 
-    private fun playSong(song : Song){
-        mediaPlayer?.let {
-            mediaPlayer!!.stop()
-            mediaPlayer!!.release()
-            unbindSafely()
-        }
-        mediaPlayer = MediaPlayer.create(this, Uri.fromFile(presenter.getFileFromSong(song)))
-        mediaPlayer?.setOnCompletionListener{
-            btnPause.hide()
-            btnPlay.show()
-            unbindSafely()
-        }
-        mediaPlayer!!.start()
-    }
 
 
 
@@ -170,14 +153,24 @@ class MainActivity : AppCompatActivity(),
 
     override fun onSongClick(song: Song) {
         //should show button layout with an animation on click
-        playSong(song)
         currentSong = song
         showControlButtons()
-        startService()
+        if(service == null){
+            startService()
+        }else{
+            service!!.playSong(currentSong, presenter.getFileFromSong(currentSong)!!)
+        }
     }
 
     override fun onEditClick(song: Song) {
         showPopup(song)
+    }
+
+
+    override fun onSongCompletion() {
+        //update ui and unbind
+        btnPlay.show()
+        btnPause.hide()
     }
 
 
@@ -220,7 +213,5 @@ class MainActivity : AppCompatActivity(),
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), PackageManager.PERMISSION_GRANTED)
         }
     }
-
-
 
 }
