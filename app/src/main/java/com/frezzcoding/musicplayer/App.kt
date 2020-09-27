@@ -4,6 +4,10 @@ import android.app.Activity
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Build
 import com.frezzcoding.musicplayer.di.components.DaggerAppComponent
 import dagger.android.AndroidInjector
@@ -24,7 +28,28 @@ class App : Application(), HasActivityInjector {
         DaggerAppComponent.builder().app(this).build().inject(this)
 
         createNotificationChannel()
+        checkForUpdates()
 
+    }
+
+    private fun checkForUpdates(){
+        val versionCode = BuildConfig.VERSION_CODE
+        val sharedPreferences: SharedPreferences = this.getSharedPreferences("shared preferences", Context.MODE_PRIVATE)
+
+        val json = sharedPreferences.getInt("version", 0)
+        if(json == 0){
+            val editor = sharedPreferences.edit()
+            editor.putInt("version", versionCode)
+            editor.apply()
+        }else{
+            if(json != versionCode){
+                val editor = sharedPreferences.edit()
+                editor.putInt("version", versionCode)
+                editor.apply()
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.frezzcoding.musicplayer"))
+                startActivity(intent)
+            }
+        }
     }
 
     private fun createNotificationChannel(){

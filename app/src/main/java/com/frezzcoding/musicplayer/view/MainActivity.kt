@@ -127,7 +127,9 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun unbindSafely(){
-        unbindService(serviceConnection)
+        if(serviceConnection != null) {
+            unbindService(serviceConnection)
+        }
         service!!.stopSelf()
     }
 
