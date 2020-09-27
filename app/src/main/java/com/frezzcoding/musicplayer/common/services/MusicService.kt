@@ -22,14 +22,12 @@ class MusicService : Service() {
     val binder: IBinder = MusicServiceBinder()
     private var mediaPlayer : MediaPlayer? = null
     private lateinit var callback : ServiceCallbacks
+    private var paused = false
 
     inner class MusicServiceBinder : Binder(){
         val service: MusicService = this@MusicService
     }
 
-    fun test(){
-        println("test")
-    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         var data = intent?.getSerializableExtra("song") as Song
@@ -60,22 +58,40 @@ class MusicService : Service() {
         return START_NOT_STICKY
     }
 
-    fun playSong(song : Song, file : File){
-        println("play song")
+    fun pauseSong(){
+        mediaPlayer?.let {
+            mediaPlayer!!.pause()
+            paused = true
+        }
+    }
+    fun stopSong(){
         mediaPlayer?.let {
             mediaPlayer!!.stop()
-            mediaPlayer!!.release()
-            //unbindSafely()
         }
-        mediaPlayer = MediaPlayer.create(this, Uri.fromFile(file))
-        mediaPlayer?.setOnCompletionListener{
-            callback.onSongCompletion()
+    }
+
+    fun isSongPlaying() : Boolean? {
+        return mediaPlayer?.isPlaying
+    }
+
+    fun playSong(song : Song, file : File){
+        if(paused){
+            paused = false
+        }else{
+            mediaPlayer?.let {
+                mediaPlayer!!.stop()
+                mediaPlayer!!.release()
+                //unbindSafely()
+            }
+            mediaPlayer = MediaPlayer.create(this, Uri.fromFile(file))
+            mediaPlayer?.setOnCompletionListener{
+                callback.onSongCompletion()
+            }
         }
         mediaPlayer!!.start()
     }
 
     fun setCallback(callback : ServiceCallbacks){
-        println("callback set")
         this.callback = callback
     }
 

@@ -45,8 +45,6 @@ class MainActivity : AppCompatActivity(),
     @Inject lateinit var presenter : MainContract.Presenter
     private lateinit var currentSong : Song
     var service : MusicService? = null
-    private var bounded = false
-    val TAG = MainActivity::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,14 +67,12 @@ class MainActivity : AppCompatActivity(),
 
     private var serviceConnection = object : ServiceConnection{
         override fun onServiceDisconnected(componentName: ComponentName) {
-            println("service disconnected")
             service = null
         }
 
         override fun onServiceConnected(componentName: ComponentName
                                         , serviceBinder: IBinder
         ) {
-            println("service connected")
             service = (serviceBinder as MusicService.MusicServiceBinder).service
             service!!.setCallback(this@MainActivity)
             service!!.playSong(currentSong, presenter.getFileFromSong(currentSong)!!)
@@ -95,10 +91,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun unbindSafely(){
-        if(bounded){
-            unbindService(serviceConnection)
-            bounded = false
-        }
+        unbindService(serviceConnection)
     }
 
     private fun init(){
@@ -109,26 +102,23 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun setListeners(){
-
         btnPlay.setOnClickListener {
-            if(!bounded){
-                btnPlay.hide()
-                btnPause.show()
-                bounded = true
-                //TODO call service method to play the song
-            }
+            btnPlay.hide()
+            btnPause.show()
+            service!!.playSong(currentSong, presenter.getFileFromSong(currentSong)!!)
         }
         btnStop.setOnClickListener {
-            if(bounded){
-                //TODO call service method to stop the song
+            service!!.isSongPlaying()?.let {
+                service!!.stopSong()
                 btnPlay.show()
-                //unbind?
             }
         }
         btnPause.setOnClickListener {
-            //TODO call service method to stop the song
-            btnPlay.show()
-            btnPause.hide()
+            service!!.isSongPlaying()?.let {
+                btnPlay.show()
+                btnPause.hide()
+                service!!.pauseSong()
+            }
         }
     }
 
@@ -172,6 +162,7 @@ class MainActivity : AppCompatActivity(),
         btnPlay.show()
         btnPause.hide()
     }
+
 
 
     private fun showControlButtons(){
