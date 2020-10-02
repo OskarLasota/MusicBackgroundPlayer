@@ -13,6 +13,7 @@ import com.frezzcoding.musicplayer.R
 import com.frezzcoding.musicplayer.models.Song
 import com.frezzcoding.musicplayer.view.callbacks.ServiceCallbacks
 import java.io.File
+import java.util.*
 
 
 class MusicService : Service() {
@@ -57,9 +58,9 @@ class MusicService : Service() {
             .setContentText(contentText)
             .setOngoing(true)
             .setAutoCancel(false)
-            .addAction(R.mipmap.ic_launcher, "Pause", PendingIntent.getBroadcast(this, 0, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT))
-            .addAction(R.mipmap.ic_launcher, "Play", PendingIntent.getBroadcast(this, 0, playIntent,  PendingIntent.FLAG_IMMUTABLE))
-            .setSmallIcon(R.drawable.ic_edit)
+            //.addAction(R.mipmap.ic_launcher, "Pause", PendingIntent.getBroadcast(this, 0, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT))
+            //.addAction(R.mipmap.ic_launcher, "Play", PendingIntent.getBroadcast(this, 0, playIntent,  PendingIntent.FLAG_IMMUTABLE))
+            .setSmallIcon(R.drawable.ic_music)
             //.setContentIntent(pendingIntent)
             .build()
 
@@ -99,11 +100,14 @@ class MusicService : Service() {
         mediaPlayer?.let {
             mediaPlayer!!.pause()
             paused = true
+            stopForeground(true)
         }
     }
     fun stopSong(){
         mediaPlayer?.let {
             mediaPlayer!!.stop()
+            callback.onSongEnd()
+            stopForeground(true)
         }
     }
 
@@ -113,6 +117,7 @@ class MusicService : Service() {
 
     fun playSong(song : Song, file : File){
         currentsong = song
+        updateNotification()
         if(paused){
             paused = false
         }else{
@@ -127,6 +132,11 @@ class MusicService : Service() {
             }
         }
         mediaPlayer!!.start()
+
+    }
+
+    fun updateSeek(millis : Int){
+        mediaPlayer!!.seekTo(millis)
     }
 
     fun setCallback(callback : ServiceCallbacks){

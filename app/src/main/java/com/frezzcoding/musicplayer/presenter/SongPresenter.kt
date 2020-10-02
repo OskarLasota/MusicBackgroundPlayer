@@ -39,16 +39,17 @@ class SongPresenter @Inject constructor(private val view : MainContract.View, pr
         listOfFiles.listFiles()?.let { filelist ->
             for (file in filelist) {
                 if (file.name.contains("mp3") || file.name.contains("mp4")) {
-                    //find duration
-                    var retriever = MediaMetadataRetriever()
-                    retriever.setDataSource(context, Uri.fromFile(file))
-                    val time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-
-                    listOfSongs.add(Song(0, file.name, "", time.toLong().round()))
+                    listOfSongs.add(Song(0, file.name, "", getSongDuration(file).round()))
                 }
             }
         }
         compareToCache(listOfSongs)
+    }
+
+    override fun getSongDuration(file : File) : Long{
+        var retriever = MediaMetadataRetriever()
+        retriever.setDataSource(context, Uri.fromFile(file))
+        return retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION).toLong()
     }
 
     private fun compareToCache(songs : List<Song>){

@@ -14,6 +14,7 @@ interface MainContract {
         fun getAllSongs()
         fun insertSong(song : Song)
         fun editSong(song : Song)
+        fun getSongDuration(file : File) : Long
     }
 
     interface Model {

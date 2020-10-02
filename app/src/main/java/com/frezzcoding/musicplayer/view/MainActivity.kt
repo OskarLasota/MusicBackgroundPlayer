@@ -8,18 +8,16 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
-import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.frezzcoding.musicplayer.R
@@ -48,6 +46,7 @@ class MainActivity : AppCompatActivity(),
     private lateinit var btnPlay : FloatingActionButton
     private lateinit var btnStop : FloatingActionButton
     private lateinit var btnPause : FloatingActionButton
+    private lateinit var seekbar : SeekBar
     @Inject lateinit var presenter : MainContract.Presenter
     private lateinit var currentSong : Song
     var service : MusicService? = null
@@ -138,9 +137,27 @@ class MainActivity : AppCompatActivity(),
         btnPlay = findViewById(R.id.btn_play)
         btnPause = findViewById(R.id.btn_pause)
         btnStop = findViewById(R.id.btn_stop)
+        seekbar = findViewById(R.id.seekbar_song)
+
     }
 
     private fun setListeners(){
+        seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if(fromUser) {
+                    service!!.updateSeek(progress)
+                }
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+               //
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                //
+            }
+
+        })
         btnPlay.setOnClickListener {
             btnPlay.hide()
             btnPause.show()
@@ -184,6 +201,7 @@ class MainActivity : AppCompatActivity(),
         //should show button layout with an animation on click
         currentSong = song
         showControlButtons()
+        seekbar.visibility = View.VISIBLE
         if(service == null){
             startService()
         }else{
@@ -191,6 +209,7 @@ class MainActivity : AppCompatActivity(),
             service!!.playSong(currentSong, presenter.getFileFromSong(currentSong)!!)
             service!!.updateNotification()
         }
+        seekbar.max = presenter.getSongDuration(presenter.getFileFromSong(currentSong)!!).toInt()
     }
 
     override fun onEditClick(song: Song) {
@@ -202,6 +221,11 @@ class MainActivity : AppCompatActivity(),
         //update ui and unbind
         btnPlay.show()
         btnPause.hide()
+        seekbar.visibility = View.GONE
+    }
+
+    override fun onSongEnd() {
+        seekbar.visibility = View.GONE
     }
 
 
