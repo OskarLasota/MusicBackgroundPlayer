@@ -9,6 +9,7 @@ import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
 import android.os.IBinder
 import android.view.View
 import android.widget.Button
@@ -49,6 +50,7 @@ class MainActivity : AppCompatActivity(),
     private lateinit var seekbar : SeekBar
     @Inject lateinit var presenter : MainContract.Presenter
     private lateinit var currentSong : Song
+    private lateinit var mHandler : Handler
     var service : MusicService? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -108,6 +110,7 @@ class MainActivity : AppCompatActivity(),
             service = (serviceBinder as MusicService.MusicServiceBinder).service
             service!!.setCallback(this@MainActivity)
             service!!.playSong(currentSong, presenter.getFileFromSong(currentSong)!!)
+            handleSeekbarProgress()
         }
     }
 
@@ -162,11 +165,14 @@ class MainActivity : AppCompatActivity(),
             btnPlay.hide()
             btnPause.show()
             service!!.playSong(currentSong, presenter.getFileFromSong(currentSong)!!)
+            seekbar.visibility = View.VISIBLE
+            handleSeekbarProgress()
         }
         btnStop.setOnClickListener {
             service!!.isSongPlaying()?.let {
                 service!!.stopSong()
                 btnPlay.show()
+                mHandler.removeCallbacksAndMessages(null)
             }
         }
         btnPause.setOnClickListener {
@@ -174,6 +180,7 @@ class MainActivity : AppCompatActivity(),
                 btnPlay.show()
                 btnPause.hide()
                 service!!.pauseSong()
+                mHandler.removeCallbacksAndMessages(null)
             }
         }
     }
@@ -208,8 +215,24 @@ class MainActivity : AppCompatActivity(),
             service!!.paused = false
             service!!.playSong(currentSong, presenter.getFileFromSong(currentSong)!!)
             service!!.updateNotification()
+            handleSeekbarProgress()
         }
         seekbar.max = presenter.getSongDuration(presenter.getFileFromSong(currentSong)!!).toInt()
+
+    }
+
+    private fun handleSeekbarProgress(){
+        mHandler = Handler()
+        //Make sure you update Seekbar on UI thread
+        runOnUiThread(object : Runnable {
+            override fun run() {
+                println("run")
+                val mCurrentPosition: Int = service!!.getSongProgress()
+                println(mCurrentPosition)
+                seekbar.progress = mCurrentPosition
+                mHandler.postDelayed(this, 1000)
+            }
+        })
     }
 
     override fun onEditClick(song: Song) {

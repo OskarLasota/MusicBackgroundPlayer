@@ -1,7 +1,5 @@
 package com.frezzcoding.musicplayer.common.services
 
-import android.app.NotificationManager
-import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.media.MediaPlayer
@@ -13,7 +11,6 @@ import com.frezzcoding.musicplayer.R
 import com.frezzcoding.musicplayer.models.Song
 import com.frezzcoding.musicplayer.view.callbacks.ServiceCallbacks
 import java.io.File
-import java.util.*
 
 
 class MusicService : Service() {
@@ -111,9 +108,7 @@ class MusicService : Service() {
         }
     }
 
-    fun isSongPlaying() : Boolean? {
-        return mediaPlayer?.isPlaying
-    }
+    fun isSongPlaying() : Boolean? = mediaPlayer?.isPlaying
 
     fun playSong(song : Song, file : File){
         currentsong = song
@@ -135,9 +130,9 @@ class MusicService : Service() {
 
     }
 
-    fun updateSeek(millis : Int){
-        mediaPlayer!!.seekTo(millis)
-    }
+    fun updateSeek(millis : Int) = mediaPlayer!!.seekTo(millis)
+
+    fun getSongProgress() : Int =  mediaPlayer!!.currentPosition
 
     fun setCallback(callback : ServiceCallbacks){
         this.callback = callback
@@ -153,7 +148,5 @@ class MusicService : Service() {
         return super.onUnbind(intent)
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
-        return binder
-    }
+    override fun onBind(intent: Intent?): IBinder? = binder
 }
