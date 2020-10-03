@@ -128,10 +128,10 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun unbindSafely(){
-        if(serviceConnection != null) {
+        if(serviceConneted) {
             unbindService(serviceConnection)
+            service!!.stopSelf()
         }
-        service!!.stopSelf()
     }
 
     private fun init(){

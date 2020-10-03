@@ -46,7 +46,9 @@ class App : Application(), HasActivityInjector {
                 val editor = sharedPreferences.edit()
                 editor.putInt("version", versionCode)
                 editor.apply()
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.frezzcoding.musicplayer"))
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.frezzcoding.musicplayer")).also {
+                    it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
                 startActivity(intent)
             }
         }
