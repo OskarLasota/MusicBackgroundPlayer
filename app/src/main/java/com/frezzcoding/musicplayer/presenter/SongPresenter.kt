@@ -43,7 +43,11 @@ class SongPresenter @Inject constructor(private val view : MainContract.View, pr
                 }
             }
         }
-        compareToCache(listOfSongs)
+        if(listOfSongs.isNullOrEmpty()){
+            view.notifyEmpty()
+        }else {
+            compareToCache(listOfSongs)
+        }
     }
 
     override fun getSongDuration(file : File) : Long{

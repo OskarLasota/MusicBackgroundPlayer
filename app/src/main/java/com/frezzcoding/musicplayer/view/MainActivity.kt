@@ -12,10 +12,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.SeekBar
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
@@ -193,6 +190,11 @@ class MainActivity : AppCompatActivity(),
     override fun initView(list: List<Song>) {
         val nonHiddenSongs = list.partition { !it.deleted }
         setAdapter(nonHiddenSongs.first)
+    }
+
+    override fun notifyEmpty() {
+        findViewById<RecyclerView>(R.id.layout_songlist).visibility = View.GONE
+        findViewById<TextView>(R.id.tv_noresult).visibility = View.VISIBLE
     }
 
 
