@@ -16,7 +16,7 @@ class SongModel @Inject constructor(var fileDao: FileDao) : MainContract.Model {
     }
 
     override fun removeSong(song: Song) {
-        fileDao.delete(song)
+        fileDao.updateSongDeleted(song.id, song.updatedName, true)
     }
 
     override fun editSong(song: Song) {

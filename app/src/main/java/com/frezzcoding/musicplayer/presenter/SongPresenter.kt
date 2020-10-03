@@ -105,12 +105,21 @@ class SongPresenter @Inject constructor(private val view : MainContract.View, pr
             model.editSong(song)
             var newlist = model.getStoredSongs()
             withContext(Dispatchers.Main){
-                println(newlist)
                 view.initView(newlist)
             }
         }
 
 
+    }
+
+    override fun hideSong(song: Song) {
+        CoroutineScope(Dispatchers.IO).launch {
+            model.removeSong(song)
+            var newlist = model.getStoredSongs()
+            withContext(Dispatchers.Main){
+                view.initView(newlist)
+            }
+        }
     }
 
 }

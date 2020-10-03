@@ -50,6 +50,7 @@ class MainActivity : AppCompatActivity(),
     private lateinit var seekbar : SeekBar
     @Inject lateinit var presenter : MainContract.Presenter
     private lateinit var currentSong : Song
+    private var serviceConneted = false
     private lateinit var mHandler : Handler
     var service : MusicService? = null
 
@@ -107,6 +108,7 @@ class MainActivity : AppCompatActivity(),
         override fun onServiceConnected(componentName: ComponentName
                                         , serviceBinder: IBinder
         ) {
+            serviceConneted = true
             service = (serviceBinder as MusicService.MusicServiceBinder).service
             service!!.setCallback(this@MainActivity)
             service!!.playSong(currentSong, presenter.getFileFromSong(currentSong)!!)
@@ -189,8 +191,10 @@ class MainActivity : AppCompatActivity(),
 
 
     override fun initView(list: List<Song>) {
-        setAdapter(list)
+        val nonHiddenSongs = list.partition { !it.deleted }
+        setAdapter(nonHiddenSongs.first)
     }
+
 
     private fun setAdapter(listOfSongs : List<Song>){
         musicViewAdapter =
@@ -226,9 +230,7 @@ class MainActivity : AppCompatActivity(),
         //Make sure you update Seekbar on UI thread
         runOnUiThread(object : Runnable {
             override fun run() {
-                println("run")
                 val mCurrentPosition: Int = service!!.getSongProgress()
-                println(mCurrentPosition)
                 seekbar.progress = mCurrentPosition
                 mHandler.postDelayed(this, 1000)
             }
@@ -249,6 +251,9 @@ class MainActivity : AppCompatActivity(),
 
     override fun onSongEnd() {
         seekbar.visibility = View.GONE
+        btnPlay.show()
+        btnPause.hide()
+        buttonLayout.visibility = View.GONE
     }
 
 
@@ -272,7 +277,12 @@ class MainActivity : AppCompatActivity(),
             dialog.dismiss()
         }
         removebutton.setOnClickListener {
-            //should hide and not remove
+            presenter.hideSong(song)
+            dialog.dismiss()
+            if(serviceConneted) {
+                service!!.stopSong()
+                mHandler.removeCallbacksAndMessages(this)
+            }
         }
         dialog.show()
 
