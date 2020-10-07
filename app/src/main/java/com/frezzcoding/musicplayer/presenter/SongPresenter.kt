@@ -107,9 +107,8 @@ class SongPresenter @Inject constructor(private val view : MainContract.View, pr
     override fun editSong(song : Song){
         CoroutineScope(Dispatchers.IO).launch {
             model.editSong(song)
-            var newlist = model.getStoredSongs()
             withContext(Dispatchers.Main){
-                view.initView(newlist)
+                view.updateAdapterItem()
             }
         }
 

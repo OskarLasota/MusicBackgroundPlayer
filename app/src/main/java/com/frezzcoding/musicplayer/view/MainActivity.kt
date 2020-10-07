@@ -266,6 +266,10 @@ class MainActivity : AppCompatActivity(),
         btnPlay.hide()
     }
 
+    override fun updateAdapterItem() {
+        musicViewAdapter.notifyDataSetChanged()
+    }
+
     private fun showPopup(song : Song){
         var dialog = Dialog(this)
         dialog.setContentView(R.layout.popup_editname)

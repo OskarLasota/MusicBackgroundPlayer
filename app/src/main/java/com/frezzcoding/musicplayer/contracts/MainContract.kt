@@ -8,6 +8,7 @@ interface MainContract {
     interface View {
         fun initView(list : List<Song>)
         fun notifyEmpty()
+        fun updateAdapterItem()
     }
 
     interface Presenter {
