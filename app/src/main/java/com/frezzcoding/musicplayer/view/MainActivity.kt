@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity(),
     @Inject lateinit var presenter : MainContract.Presenter
     private lateinit var currentSong : Song
     private var serviceConneted = false
-    private lateinit var mHandler : Handler
+    private var mHandler = Handler()
     var service : MusicService? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -129,6 +129,7 @@ class MainActivity : AppCompatActivity(),
 
     private fun unbindSafely(){
         if(serviceConneted) {
+            mHandler.removeCallbacksAndMessages(null)
             unbindService(serviceConnection)
             service!!.stopSelf()
         }
@@ -224,7 +225,6 @@ class MainActivity : AppCompatActivity(),
             handleSeekbarProgress()
         }
         seekbar.max = presenter.getSongDuration(presenter.getFileFromSong(currentSong)!!).toInt()
-
     }
 
     private fun handleSeekbarProgress(){
@@ -256,9 +256,8 @@ class MainActivity : AppCompatActivity(),
         btnPlay.show()
         btnPause.hide()
         buttonLayout.visibility = View.GONE
+        mHandler.removeCallbacksAndMessages(null)
     }
-
-
 
     private fun showControlButtons(){
         buttonLayout.visibility = View.VISIBLE
@@ -273,7 +272,6 @@ class MainActivity : AppCompatActivity(),
     private fun showPopup(song : Song){
         var dialog = Dialog(this)
         dialog.setContentView(R.layout.popup_editname)
-
         var inputfield = dialog.findViewById<EditText>(R.id.et_newtitle)
         var removebutton = dialog.findViewById<Button>(R.id.btn_hidesong)
         var submitbutton = dialog.findViewById<Button>(R.id.btn_confirm)
