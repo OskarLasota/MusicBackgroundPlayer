@@ -119,11 +119,11 @@ class MusicService : Service() {
             mediaPlayer?.let {
                 mediaPlayer!!.stop()
                 mediaPlayer!!.release()
-                //unbindSafely()
             }
             mediaPlayer = MediaPlayer.create(this, Uri.fromFile(file))
             mediaPlayer?.setOnCompletionListener{
                 callback.onSongCompletion()
+                stopForeground(true)
             }
         }
         mediaPlayer!!.start()
